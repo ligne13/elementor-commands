@@ -11,6 +11,10 @@ if ( ! class_exists( 'WP_CLI' ) ) {
  */
 class Elementor_Commands extends WP_CLI_Command {
 
+    public function helloWorld() {
+        WP_CLI::success( 'hello world' );
+    }
+
     /**
      * Regenerate the Elementor Page Builder CSS.
      *
