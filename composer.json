@@ -1,8 +1,8 @@
 {
-    "name": "Nikschavan/elementor-commands",
+    "name": "ligne13/elementor-commands",
     "description": "",
     "type": "wp-cli-package",
-    "homepage": "https://github.com/Nikschavan/elementor-commands",
+    "homepage": "https://github.com/ligne13/elementor-commands",
     "license": "MIT",
     "authors": [],
     "minimum-stability": "dev",
