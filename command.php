@@ -1,5 +1,6 @@
 <?php
 
+use Elementor\Global_CSS_File;
 use Elementor\Post_CSS_File;
 
 if ( ! class_exists( 'WP_CLI' ) ) {
@@ -24,6 +25,10 @@ class Elementor_Commands extends WP_CLI_Command {
     public function rebuild_css( $args, $assoc_args ) {
 
         if ( class_exists( '\Elementor\Plugin' ) ) {
+
+            WP_CLI::line( WP_CLI::colorize( '%cRebuilding global CSS file%n' ) );
+            $global_css_file = new Global_CSS_File();
+            $global_css_file->update();
 
             $current_blog_id = get_current_blog_id();
 
@@ -65,6 +70,9 @@ class Elementor_Commands extends WP_CLI_Command {
                 }
 
             }
+
+            $global_css_file = new Global_CSS_File();
+            $global_css_file->update();
 
             if ( isset( $assoc_args['network'] ) ) {
                 WP_CLI::line( WP_CLI::colorize( '%3%k[NETWORK] Switching back to site%n ' . $current_blog_id ) );
