@@ -25,8 +25,10 @@ class Elementor_Commands extends WP_CLI_Command {
         if ( class_exists( '\Elementor\Plugin' ) ) {
 
             $pages = get_posts( [
-                'post_type'   => 'page',
-                'post_status' => 'any',
+                'post_type'      => 'page',
+                'post_status'    => 'any',
+                'posts_per_page' => - 1,
+                'offset'         => 0,
             ] );
 
             foreach ( $pages as $page ) {
