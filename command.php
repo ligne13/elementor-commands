@@ -29,15 +29,17 @@ class Elementor_Commands extends WP_CLI_Command {
             $current_blog_id = get_current_blog_id();
 
             if ( isset( $assoc_args['network'] ) ) {
-                $response = WP_CLI::launch_self( 'site list', [], [
-                    'fields' => 'blog_id,domain',
-                    'format' => 'json',
-                ], false, true );
-                $sites    = json_decode( $response->stdout );
+                $options = array(
+                    'return'     => true,   // Return 'STDOUT'; use 'all' for full object.
+                    'parse'      => 'json', // Parse captured STDOUT to JSON array.
+                    'launch'     => false,  // Reuse the current process.
+                    'exit_error' => true,   // Halt script execution on error.
+                );
+                $sites = WP_CLI::runcommand('site list --format=json --fields=blog_id,domain', $options );
                 WP_CLI::line( WP_CLI::colorize( '%c[NETWORK] Number of sites%n ' . count( $sites ) ) );
             } else {
                 // running for first site in the network
-                $sites = [ get_blog_details( $current_blog_id, false ) ];
+                $sites = [ (array) get_blog_details( $current_blog_id, false ) ];
             }
 
             if ( $sites ) {
@@ -45,9 +47,9 @@ class Elementor_Commands extends WP_CLI_Command {
                 foreach ( $sites as $site ) {
 
                     if ( isset( $assoc_args['network'] ) ) {
-                        WP_CLI::line( WP_CLI::colorize( '%3%k[NETWORK] Switching to site%n ' . $site->domain . ' (' . $site->blog_id . ')' ) );
+                        WP_CLI::line( WP_CLI::colorize( '%3%k[NETWORK] Switching to site%n ' . $site['domain'] . ' (' . $site['blog_id'] . ')' ) );
                     }
-                    switch_to_blog( $site->blog_id );
+                    switch_to_blog( $site['blog_id'] );
 
                     WP_CLI::line( WP_CLI::colorize( '%cRebuilding global CSS file%n' ) );
                     $global_css_file = new Global_CSS_File();
