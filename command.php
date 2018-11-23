@@ -16,6 +16,7 @@ class Elementor_Commands extends WP_CLI_Command {
     }
 
     /**
+     * Rebuild the page CSS file for every page in every site on the network
      *
      * @param $args
      * @param $assoc_args
@@ -24,16 +25,50 @@ class Elementor_Commands extends WP_CLI_Command {
 
         if ( class_exists( '\Elementor\Plugin' ) ) {
 
-            $pages = get_posts( [
-                'post_type'      => 'page',
-                'post_status'    => 'any',
-                'posts_per_page' => - 1,
-                'offset'         => 0,
-            ] );
+            $current_blog_id = get_current_blog_id();
 
-            foreach ( $pages as $page ) {
-                $css_file = new Post_CSS_File( $page->ID );
-                $css_file->update();
+            if ( isset( $assoc_args['network'] ) ) {
+                $response = WP_CLI::launch_self( 'site list', [], [
+                    'fields' => 'blog_id,domain',
+                    'format' => 'json',
+                ], false, true );
+                $sites    = json_decode( $response->stdout );
+                WP_CLI::line( WP_CLI::colorize( '%c[NETWORK] Number of sites%n ' . count( $sites ) ) );
+            } else {
+                // running for first site in the network
+                $sites = [ get_blog_details( $current_blog_id, false ) ];
+            }
+
+            if ( $sites ) {
+
+                foreach ( $sites as $site ) {
+
+                    if ( isset( $assoc_args['network'] ) ) {
+                        WP_CLI::line( WP_CLI::colorize( '%3%k[NETWORK] Switching to site%n ' . $site->domain . ' (' . $site->blog_id . ')' ) );
+                    }
+                    switch_to_blog( $site->blog_id );
+
+                    $pages = get_posts( [
+                        'post_type'      => 'page',
+                        'post_status'    => 'any',
+                        'posts_per_page' => - 1,
+                        'offset'         => 0,
+                    ] );
+
+                    WP_CLI::line( WP_CLI::colorize( '%mNumber of pages%n ' . count( $pages ) ) );
+
+                    foreach ( $pages as $page ) {
+                        WP_CLI::line( WP_CLI::colorize( '%yRebuilding CSS for page %n' . $page->ID ) );
+                        $css_file = new Post_CSS_File( $page->ID );
+                        $css_file->update();
+                    }
+                }
+
+            }
+
+            if ( isset( $assoc_args['network'] ) ) {
+                WP_CLI::line( WP_CLI::colorize( '%3%k[NETWORK] Switching back to site%n ' . $current_blog_id ) );
+                switch_to_blog( $current_blog_id );
             }
 
             WP_CLI::success( 'CSS has been rebuilt for every page' );
@@ -41,6 +76,7 @@ class Elementor_Commands extends WP_CLI_Command {
         } else {
             WP_CLI::error( 'Elementor is not installed on this site' );
         }
+
     }
 
     /**
