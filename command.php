@@ -32,9 +32,8 @@ class Elementor_Commands extends WP_CLI_Command {
             ] );
 
             foreach ( $pages as $page ) {
-                WP_CLI::log( $page->ID );
-                //$css_file = new Post_CSS_File( $page->ID );
-                //$css_file->update();
+                $css_file = new Post_CSS_File( $page->ID );
+                $css_file->update();
             }
 
             WP_CLI::success( 'CSS has been rebuilt for every page' );
