@@ -10,7 +10,7 @@ if ( ! class_exists( 'WP_CLI' ) ) {
 /**
  * WP ClI Commands for Elementor
  */
-class Elementor_Commands extends WP_CLI_Command {
+class Elementor_Command extends WP_CLI_Command {
 
     /**
      * Just a test to check if the package is installed and callable
@@ -114,4 +114,4 @@ class Elementor_Commands extends WP_CLI_Command {
 
 }
 
-WP_CLI::add_command( 'elementor-commands', 'Elementor_Commands' );
+WP_CLI::add_command( 'elementor', 'Elementor_Command' );
