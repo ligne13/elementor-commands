@@ -16,6 +16,33 @@ class Elementor_Commands extends WP_CLI_Command {
     }
 
     /**
+     *
+     * @param $args
+     * @param $assoc_args
+     */
+    public function rebuild_css( $args, $assoc_args ) {
+
+        if ( class_exists( '\Elementor\Plugin' ) ) {
+
+            $pages = get_posts( [
+                'post_type'   => 'page',
+                'post_status' => 'any',
+            ] );
+
+            foreach ( $pages as $page ) {
+                WP_CLI::log( $page->ID );
+                //$css_file = new Post_CSS_File( $page->ID );
+                //$css_file->update();
+            }
+
+            WP_CLI::success( 'CSS has been rebuilt for every page' );
+
+        } else {
+            WP_CLI::error( 'Elementor is not installed on this site' );
+        }
+    }
+
+    /**
      * Regenerate the Elementor Page Builder CSS.
      *
      * [--network]
