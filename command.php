@@ -16,7 +16,7 @@ class Elementor_Commands extends WP_CLI_Command {
      * Just a test to check if the package is installed and callable
      */
     public function hello() {
-        WP_CLI::success( 'Hello elementor-commands' );
+        WP_CLI::success( 'Hello ' . __CLASS__ );
     }
 
     /**
