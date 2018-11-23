@@ -74,7 +74,7 @@ class Elementor_Commands extends WP_CLI_Command {
             $global_css_file = new Global_CSS_File();
             $global_css_file->update();
 
-            if ( isset( $assoc_args['network'] ) ) {
+            if ( isset( $assoc_args['network'] ) && count( $sites ) > 0 ) {
                 WP_CLI::line( WP_CLI::colorize( '%3%k[NETWORK] Switching back to site%n ' . $current_blog_id ) );
                 switch_to_blog( $current_blog_id );
             }
