@@ -26,10 +26,6 @@ class Elementor_Commands extends WP_CLI_Command {
 
         if ( class_exists( '\Elementor\Plugin' ) ) {
 
-            WP_CLI::line( WP_CLI::colorize( '%cRebuilding global CSS file%n' ) );
-            $global_css_file = new Global_CSS_File();
-            $global_css_file->update();
-
             $current_blog_id = get_current_blog_id();
 
             if ( isset( $assoc_args['network'] ) ) {
@@ -53,6 +49,10 @@ class Elementor_Commands extends WP_CLI_Command {
                     }
                     switch_to_blog( $site->blog_id );
 
+                    WP_CLI::line( WP_CLI::colorize( '%cRebuilding global CSS file%n' ) );
+                    $global_css_file = new Global_CSS_File();
+                    $global_css_file->update();
+
                     $pages = get_posts( [
                         'post_type'      => 'page',
                         'post_status'    => 'any',
@@ -74,7 +74,7 @@ class Elementor_Commands extends WP_CLI_Command {
             $global_css_file = new Global_CSS_File();
             $global_css_file->update();
 
-            if ( isset( $assoc_args['network'] ) && count( $sites ) > 0 ) {
+            if ( isset( $assoc_args['network'] ) ) {
                 WP_CLI::line( WP_CLI::colorize( '%3%k[NETWORK] Switching back to site%n ' . $current_blog_id ) );
                 switch_to_blog( $current_blog_id );
             }
